@@ -514,8 +514,10 @@
     return nil;
 }
 
--(void)leftPressed:(id)sender{
+-(void)leftPressed:(id)sender
+{
     self.rightBarButton.enabled = YES;
+    self.leftBarButton.enabled = NO;
     
     MHImageViewController *theCurrentViewController = self.pageViewController.viewControllers.firstObject;
     if (theCurrentViewController.moviePlayer) {
@@ -542,8 +544,10 @@
     }];
 }
 
--(void)rightPressed:(id)sender{
-    self.leftBarButton.enabled =YES;
+-(void)rightPressed:(id)sender
+{
+    self.leftBarButton.enabled = YES;
+    self.rightBarButton.enabled = NO;
     
     MHImageViewController *theCurrentViewController = self.pageViewController.viewControllers.firstObject;
     if (theCurrentViewController.moviePlayer) {
