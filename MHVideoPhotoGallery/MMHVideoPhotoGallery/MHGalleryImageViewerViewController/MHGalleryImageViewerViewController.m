@@ -41,11 +41,15 @@
 @end
 
 @interface MHGalleryImageViewerViewController()<MHGalleryLabelDelegate>
+
 @property (nonatomic, strong) MHGradientView           *bottomSuperView;
 @property (nonatomic, strong) MHBarButtonItem          *shareBarButton;
 @property (nonatomic, strong) MHBarButtonItem          *leftBarButton;
 @property (nonatomic, strong) MHBarButtonItem          *rightBarButton;
 @property (nonatomic, strong) MHBarButtonItem          *playStopBarButton;
+
+@property (nonatomic, assign) BOOL transitionInProgress;
+
 @end
 
 @implementation MHGalleryImageViewerViewController
@@ -568,17 +572,22 @@
     if (indexPage-1 == 0) {
         self.leftBarButton.enabled = NO;
     }
+    
     if (!imageViewController) {
         return;
     }
     
-    __weak typeof(self) weakSelf = self;
-    
-    [self.pageViewController setViewControllers:@[imageViewController] direction:UIPageViewControllerNavigationDirectionReverse animated:YES completion:^(BOOL finished) {
-        weakSelf.pageIndex = imageViewController.pageIndex;
-        [weakSelf updateToolBarForItem:[weakSelf itemForIndex:weakSelf.pageIndex]];
-        [weakSelf showCurrentIndex:weakSelf.pageIndex];
-    }];
+    if (!self.transitionInProgress) {
+        __weak typeof(self) weakSelf = self;
+        self.transitionInProgress = YES;
+        
+        [self.pageViewController setViewControllers:@[imageViewController] direction:UIPageViewControllerNavigationDirectionReverse animated:YES completion:^(BOOL finished) {
+            weakSelf.transitionInProgress = NO;
+            weakSelf.pageIndex = imageViewController.pageIndex;
+            [weakSelf updateToolBarForItem:[weakSelf itemForIndex:weakSelf.pageIndex]];
+            [weakSelf showCurrentIndex:weakSelf.pageIndex];
+        }];
+    }
 }
 
 -(void)rightPressed:(id)sender
@@ -598,17 +607,22 @@
     if (indexPage+1 == self.numberOfGalleryItems-1) {
         self.rightBarButton.enabled = NO;
     }
+    
     if (!imageViewController) {
         return;
     }
     
-    __weak typeof(self) weakSelf = self;
-    
-    [self.pageViewController setViewControllers:@[imageViewController] direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:^(BOOL finished) {
-        weakSelf.pageIndex = imageViewController.pageIndex;
-        [weakSelf updateToolBarForItem:[weakSelf itemForIndex:weakSelf.pageIndex]];
-        [weakSelf showCurrentIndex:weakSelf.pageIndex];
-    }];
+    if (!self.transitionInProgress) {
+        __weak typeof(self) weakSelf = self;
+        self.transitionInProgress = YES;
+        
+        [self.pageViewController setViewControllers:@[imageViewController] direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:^(BOOL finished) {
+            weakSelf.transitionInProgress = NO;
+            weakSelf.pageIndex = imageViewController.pageIndex;
+            [weakSelf updateToolBarForItem:[weakSelf itemForIndex:weakSelf.pageIndex]];
+            [weakSelf showCurrentIndex:weakSelf.pageIndex];
+        }];
+    }
 }
 
 -(void)showCurrentIndex:(NSInteger)currentIndex{
