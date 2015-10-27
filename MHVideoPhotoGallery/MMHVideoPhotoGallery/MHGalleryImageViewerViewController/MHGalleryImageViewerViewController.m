@@ -582,10 +582,19 @@
         self.transitionInProgress = YES;
         
         [self.pageViewController setViewControllers:@[imageViewController] direction:UIPageViewControllerNavigationDirectionReverse animated:YES completion:^(BOOL finished) {
-            weakSelf.transitionInProgress = NO;
-            weakSelf.pageIndex = imageViewController.pageIndex;
-            [weakSelf updateToolBarForItem:[weakSelf itemForIndex:weakSelf.pageIndex]];
-            [weakSelf showCurrentIndex:weakSelf.pageIndex];
+            
+            if (finished) {
+                // bug fix for uipageview controller
+                // http://stackoverflow.com/a/17330606
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [weakSelf.pageViewController setViewControllers:@[imageViewController] direction:UIPageViewControllerNavigationDirectionReverse animated:NO completion:NULL];
+                });
+                
+                weakSelf.transitionInProgress = NO;
+                weakSelf.pageIndex = imageViewController.pageIndex;
+                [weakSelf updateToolBarForItem:[weakSelf itemForIndex:weakSelf.pageIndex]];
+                [weakSelf showCurrentIndex:weakSelf.pageIndex];
+            }
         }];
     }
 }
@@ -617,10 +626,19 @@
         self.transitionInProgress = YES;
         
         [self.pageViewController setViewControllers:@[imageViewController] direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:^(BOOL finished) {
-            weakSelf.transitionInProgress = NO;
-            weakSelf.pageIndex = imageViewController.pageIndex;
-            [weakSelf updateToolBarForItem:[weakSelf itemForIndex:weakSelf.pageIndex]];
-            [weakSelf showCurrentIndex:weakSelf.pageIndex];
+            
+            if (finished) {
+                // bug fix for uipageview controller
+                // http://stackoverflow.com/a/17330606
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [weakSelf.pageViewController setViewControllers:@[imageViewController] direction:UIPageViewControllerNavigationDirectionForward animated:NO completion:NULL];
+                });
+                
+                weakSelf.transitionInProgress = NO;
+                weakSelf.pageIndex = imageViewController.pageIndex;
+                [weakSelf updateToolBarForItem:[weakSelf itemForIndex:weakSelf.pageIndex]];
+                [weakSelf showCurrentIndex:weakSelf.pageIndex];
+            }
         }];
     }
 }
